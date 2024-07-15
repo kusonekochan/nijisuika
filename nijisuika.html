@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>にじさんスイカ</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: black;
+        }
+        canvas {
+            display: block;
+            touch-action: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        #gameCanvas {
+            z-index: 1;
+        }
+        #videoCanvas {
+            z-index: 2;
+        }
+        video {
+            display: none;
+        }
+        #restartArea {
+            position: absolute;
+            bottom: 10%; /* 位置を調整 */
+            left: 0%;
+            width: 100%; /* サイズを調整 */
+            height: 150px; /* サイズを調整 */
+            z-index: 3;
+            cursor: pointer;
+        }
+    </style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1420985564599583"
+     crossorigin="anonymous"></script>
+</head>
+<body>
+    <canvas id="gameCanvas"></canvas>
+    <canvas id="videoCanvas"></canvas>
+    <div id="restartArea"></div>
+    <video id="cutinVideo" preload="auto"></video>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.18.0/matter.min.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>
