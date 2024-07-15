@@ -5,35 +5,38 @@ const db = require('./db');
 const app = express();
 
 app.use(cors({
-    origin: ['https://gameru.girly.jp', 'http://nyandaru.starfree.jp'], // 許可するオリジンを追加
-    methods: ['GET', 'POST'],
-    allowedHeaders: ['Content-Type']
+    origin: '*'
 }));
 
 app.use(express.json());
 
 app.get('/highscores', async (req, res) => {
     try {
-        const result = await db.query('SELECT * FROM highscores ORDER BY score DESC LIMIT 10');
+        const result = await db.query('SELECT * FROM highscores ORDER BY score DESC');
         res.json(result.rows);
     } catch (err) {
-        console.error(err);
+        console.error('Error retrieving high scores', err);
         res.status(500).json({ error: 'Database error' });
     }
 });
 
 app.post('/highscores', async (req, res) => {
     const { name, score } = req.body;
+
+    if (!name || !score) {
+        return res.status(400).json({ error: 'Invalid input' });
+    }
+
     try {
         const result = await db.query('INSERT INTO highscores (name, score) VALUES ($1, $2) RETURNING *', [name, score]);
         res.json(result.rows[0]);
     } catch (err) {
-        console.error(err);
+        console.error('Error saving high score', err);
         res.status(500).json({ error: 'Database error' });
     }
 });
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+    console.log(`Server running on port ${PORT}`);
 });
