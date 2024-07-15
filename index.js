@@ -1,49 +1,46 @@
+require('dotenv').config();
 const express = require('express');
-const cors = require('cors');
+const cors = require('cors'); // 追加
 const app = express();
-const PORT = process.env.PORT || 3000;
+const db = require('./db');
 
-app.use(cors());
+const allowedOrigins = ['http://gameru.girly.jp', 'http://nyandaru.starfree.jp'];
+const options = {
+  origin: function (origin, callback) {
+    if (allowedOrigins.includes(origin) || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+};
+
+app.use(cors(options)); // CORSミドルウェアを追加
+
 app.use(express.json());
 
-const { Client } = require('pg');
-
-// PostgreSQLクライアントの設定
-const client = new Client({
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    ssl: {
-        rejectUnauthorized: false
-    }
+app.get('/highscores', async (req, res) => {
+  try {
+    const result = await db.query('SELECT * FROM highscores ORDER BY score DESC LIMIT 10');
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Database error' });
+  }
 });
 
-// データベースに接続
-client.connect();
-
-app.get('/api/highscores', async (req, res) => {
-    try {
-        const result = await client.query('SELECT * FROM highscores ORDER BY score DESC LIMIT 10');
-        res.json(result.rows);
-    } catch (error) {
-        console.error('Error fetching high scores:', error);
-        res.status(500).json({ error: 'Failed to fetch high scores', details: error.message });
-    }
+app.post('/highscores', async (req, res) => {
+  const { name, score } = req.body;
+  try {
+    const result = await db.query('INSERT INTO highscores (name, score) VALUES ($1, $2) RETURNING *', [name, score]);
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Database error' });
+  }
 });
 
-app.post('/api/highscores', async (req, res) => {
-    const { name, score } = req.body;
-    try {
-        const result = await client.query('INSERT INTO highscores (name, score) VALUES ($1, $2) RETURNING *', [name, score]);
-        res.status(201).json(result.rows[0]);
-    } catch (error) {
-        console.error('Error saving high score:', error);
-        res.status(500).json({ error: 'Failed to save high score', details: error.message });
-    }
-});
-
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
