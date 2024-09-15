@@ -3,17 +3,15 @@ const cors = require('cors');
 const { Pool } = require('pg');
 const app = express();
 
-// CORS設定を追加
+// CORS 設定を修正: 必要に応じて全てのオリジンを一時的に許可
 app.use(cors({
-    origin: 'https://gameru.girly.jp', // 許可するオリジン
-    methods: ['GET', 'POST'], // 許可するメソッド
-    allowedHeaders: ['Content-Type'], // 許可するヘッダー
+    origin: '*', // 特定のオリジンがうまくいかない場合、全てのオリジンを許可して動作確認
 }));
 
-// JSONボディの解析
+// JSON ボディの解析
 app.use(express.json());
 
-// PostgreSQLクライアントの設定
+// PostgreSQL クライアントの設定
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
     ssl: {
