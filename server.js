@@ -3,15 +3,17 @@ const cors = require('cors');
 const { Pool } = require('pg');
 const app = express();
 
-// CORS 設定を追加
+// CORS設定を追加
 app.use(cors({
-    origin: 'https://gameru.girly.jp' // 許可するオリジンを指定
+    origin: 'https://gameru.girly.jp', // 許可するオリジン
+    methods: ['GET', 'POST'], // 許可するメソッド
+    allowedHeaders: ['Content-Type'], // 許可するヘッダー
 }));
 
-// JSON ボディの解析
+// JSONボディの解析
 app.use(express.json());
 
-// PostgreSQL クライアントの設定
+// PostgreSQLクライアントの設定
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
     ssl: {
@@ -43,6 +45,7 @@ app.get('/highscores', async (req, res) => {
 });
 
 // サーバーの起動
-app.listen(3000, () => {
-    console.log('Server is running on port 3000');
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
 });
