@@ -3,10 +3,11 @@ const cors = require('cors');
 const { Pool } = require('pg');
 const app = express();
 
-// CORS 設定: 全てのオリジンを許可（問題解消後、特定のオリジンに戻します）
+// CORS 設定: 全てのオリジンを許可
 app.use(cors({
     origin: '*', // 全てのオリジンを許可
-    methods: ['GET', 'POST'], // 必要なHTTPメソッドを指定
+    methods: ['GET', 'POST'], // GETとPOSTメソッドを許可
+    allowedHeaders: ['Content-Type'], // 必要なヘッダーを指定
 }));
 
 // JSONボディの解析
