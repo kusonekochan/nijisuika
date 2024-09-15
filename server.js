@@ -6,9 +6,10 @@ const app = express();
 // CORS設定: 一時的に全てのオリジンを許可
 app.use(cors({
     origin: '*', // すべてのオリジンを許可
-    methods: ['GET', 'POST'], // GETとPOSTメソッドを許可
-    allowedHeaders: ['Content-Type'], // 必要なヘッダーを許可
+    methods: ['GET', 'POST'],
+    allowedHeaders: ['Content-Type', 'Authorization'] // 必要に応じてヘッダーを追加
 }));
+
 
 // JSONボディの解析
 app.use(express.json());
