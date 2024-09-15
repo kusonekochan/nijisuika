@@ -1,14 +1,22 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const app = express();
 const db = require('./db');
 
-const corsOptions = {
-  origin: ['http://gameru.girly.jp', 'http://nyandaru.starfree.jp'],
-  optionsSuccessStatus: 200
+const allowedOrigins = ['http://gameru.girly.jp', 'http://nyandaru.starfree.jp'];
+const options = {
+  origin: function (origin, callback) {
+    if (allowedOrigins.includes(origin) || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
 };
 
-app.use(cors(corsOptions));
+app.use(cors(options));
+
 app.use(express.json());
 
 app.get('/highscores', async (req, res) => {
@@ -16,8 +24,8 @@ app.get('/highscores', async (req, res) => {
     const result = await db.query('SELECT * FROM highscores ORDER BY score DESC LIMIT 10');
     res.json(result.rows);
   } catch (err) {
-    console.error('Error fetching high scores:', err);
-    res.status(500).json({ error: 'Failed to fetch high scores' });
+    console.error(err);
+    res.status(500).json({ error: 'Database error' });
   }
 });
 
@@ -25,10 +33,10 @@ app.post('/highscores', async (req, res) => {
   const { name, score } = req.body;
   try {
     const result = await db.query('INSERT INTO highscores (name, score) VALUES ($1, $2) RETURNING *', [name, score]);
-    res.json(result.rows[0]);
+    res.status(201).json(result.rows[0]);
   } catch (err) {
-    console.error('Error saving high score:', err);
-    res.status(500).json({ error: 'Failed to save high score' });
+    console.error(err);
+    res.status(500).json({ error: 'Database error' });
   }
 });
 
