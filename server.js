@@ -3,12 +3,13 @@ const cors = require('cors');
 const { Pool } = require('pg');
 const app = express();
 
-// CORS 設定を修正: 必要に応じて全てのオリジンを一時的に許可
+// CORS 設定: 全てのオリジンを許可（問題解消後、特定のオリジンに戻します）
 app.use(cors({
-    origin: '*', // 特定のオリジンがうまくいかない場合、全てのオリジンを許可して動作確認
+    origin: '*', // 全てのオリジンを許可
+    methods: ['GET', 'POST'], // 必要なHTTPメソッドを指定
 }));
 
-// JSON ボディの解析
+// JSONボディの解析
 app.use(express.json());
 
 // PostgreSQL クライアントの設定
