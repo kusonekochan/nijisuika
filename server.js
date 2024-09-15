@@ -3,17 +3,17 @@ const cors = require('cors');
 const { Pool } = require('pg');
 const app = express();
 
-// CORS 設定: 全てのオリジンを許可
+// CORS設定: 一時的に全てのオリジンを許可
 app.use(cors({
-    origin: '*', // 全てのオリジンを許可
+    origin: '*', // すべてのオリジンを許可
     methods: ['GET', 'POST'], // GETとPOSTメソッドを許可
-    allowedHeaders: ['Content-Type'], // 必要なヘッダーを指定
+    allowedHeaders: ['Content-Type'], // 必要なヘッダーを許可
 }));
 
 // JSONボディの解析
 app.use(express.json());
 
-// PostgreSQL クライアントの設定
+// PostgreSQLクライアントの設定
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
     ssl: {
