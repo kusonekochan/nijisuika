@@ -7,7 +7,9 @@ const PORT = process.env.PORT || 10000;
 
 // CORSミドルウェアを使用
 app.use(cors({
-    origin: 'https://gameru.girly.jp/' // 必要に応じて適切なオリジンを指定
+    origin: ['https://gameru.girly.jp', 'https://gameru.girly.jp//nijisuika/nijisuika.html'],
+    methods: ['GET', 'POST'],
+    allowedHeaders: ['Content-Type']
 }));
 
 app.use(express.json());  // JSONボディのパース用ミドルウェア
