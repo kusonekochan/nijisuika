@@ -1,21 +1,9 @@
-require('dotenv').config();
-const express = require('express');
 const cors = require('cors');
 const app = express();
 const db = require('./db');
 
-const allowedOrigins = ['http://gameru.girly.jp', 'http://nyandaru.starfree.jp'];
-const options = {
-  origin: function (origin, callback) {
-    if (allowedOrigins.includes(origin) || !origin) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-};
-
-app.use(cors(options));
+// CORS 全てのオリジンを許可
+app.use(cors());
 
 app.use(express.json());
 
