@@ -1,6 +1,8 @@
 const cors = require('cors');
 const app = express();
 const db = require('./db');
+const express = require('express');
+
 
 // CORS 全てのオリジンを許可
 app.use(cors());
