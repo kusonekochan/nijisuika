@@ -1,12 +1,12 @@
+const express = require('express'); // expressのインポートは最初に
 const cors = require('cors');
-const app = express();
 const db = require('./db');
-const express = require('express');
-
+const app = express();
 
 // CORS 全てのオリジンを許可
 app.use(cors());
 
+// JSONボディのパースを有効化
 app.use(express.json());
 
 // 高スコアの取得
@@ -32,6 +32,7 @@ app.post('/highscores', async (req, res) => {
   }
 });
 
+// サーバーを指定されたポートで起動
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
